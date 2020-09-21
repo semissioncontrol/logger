@@ -21,6 +21,7 @@ after_success: |
   cd kcov-master &&
   mkdir build &&
   cd build &&
+  apt install libdw-dev &&
   cmake .. &&
   make &&
   make install DESTDIR=../../kcov-build &&
