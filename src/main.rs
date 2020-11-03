@@ -14,9 +14,20 @@
 
 // Written by: Bobbbay Bobbayan
 
-use std::{thread, time, fs};
+use std::{thread, time, fs, env};
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let mut time = 10; // Set time in ms
+    
+    // If args are larger than 1 then parse them 
+    if(args.len() > 1) {
+      if(args[1] == "-t") {
+        time = args[2].parse::<u64>().unwrap();
+      }
+    }
+
     // Find all logger directories on startup. As
     // mentioned in theory, each module should have 
     // its own logger directory.
@@ -45,7 +56,10 @@ fn main() {
             }
         }
         // Finally, print out the status files and wait 1ms
-        println!("{:?}", err_files);
-        thread::sleep(time::Duration::from_millis(1));
+
+        if(file_num >= 0) {
+          println!("{:?}", err_files);
+        }
+        thread::sleep(time::Duration::from_millis(time));
     }
 }
