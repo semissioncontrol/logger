@@ -22,7 +22,7 @@ fn main() {
     let CurrentTime = SystemTime::now();
     let epochTime = CurrentTime
         .duration_since(UNIX_EPOCH)
-        .expect("Time went backwards");
+        .expect("An issue has occurred establishing the epoch time");
     
     let mut time = 10; // Set time in ms
     let mut root_addr: String = "/semc/logger".to_owned();
@@ -56,7 +56,7 @@ fn main() {
             let currentTime_Second = SystemTime::now();
             let currentEpochTime = currentTime_Second
                 .duration_since(UNIX_EPOCH)
-                .expect("Time went backwards"); 
+                .expect("An issue has occurred establishing the epoch time"); 
             if(currentEpochTime.as_millis() - startingEpochTime.as_millis() > args[2].parse::<u128>().unwrap()) {
               break;
             }
