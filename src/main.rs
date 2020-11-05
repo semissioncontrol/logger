@@ -14,14 +14,35 @@
 
 // Written by: Bobbbay Bobbayan
 
-use std::{thread, time, fs};
-
+use std::{thread, time, fs, env};
+use std::time::{SystemTime, UNIX_EPOCH};
 fn main() {
+    let args: Vec<String> = env::args().collect();
+
+    let CurrentTime = SystemTime::now();
+    let epochTime = CurrentTime
+        .duration_since(UNIX_EPOCH)
+        .expect("An issue has occurred establishing the epoch time");
+    
+    let mut time = 10; // Set time in ms
+    let mut root_addr: String = "/semc/logger".to_owned();
+
+    // If args are larger than 1 then parse these args 
+    if(args.len() > 1) {
+      if(args[1] == "-e") {
+        time = args[2].parse::<u64>().unwrap();
+      } 
+      else if (args[1] == "-m") {
+        let path: &str = &args[2];
+        root_addr.push_str(path);     // I believe this is how you concatenate strings in rust so this may or may not work 
+      }
+    }
+
     // Find all logger directories on startup. As
     // mentioned in theory, each module should have 
     // its own logger directory.
     let mut directories = vec![];
-    for entry in fs::read_dir("/semc/logger") {
+    for entry in fs::read_dir(root_addr) {
         directories.extend(entry)
     }
 
@@ -29,6 +50,20 @@ fn main() {
     // we can have an infinite loop that will read these
     // for files.
     loop {
+
+        if(args.len() > 1) {
+          if(args[1] == "-t") {
+            let currentTime_Second = SystemTime::now();
+            let currentEpochTime = currentTime_Second
+                .duration_since(UNIX_EPOCH)
+                .expect("An issue has occurred establishing the epoch time"); 
+            if(currentEpochTime.as_millis() - startingEpochTime.as_millis() > args[2].parse::<u128>().unwrap()) {
+              break;
+            }
+          }
+        }
+
+
         // file_num stores the amount of status files
         // detected. This number should hopefully be as
         // little as possible, because status files are
@@ -45,7 +80,10 @@ fn main() {
             }
         }
         // Finally, print out the status files and wait 1ms
-        println!("{:?}", err_files);
-        thread::sleep(time::Duration::from_millis(1));
+
+        if(file_num > 0) {
+          println!("{:?}", err_files);
+        }
+        thread::sleep(time::Duration::from_millis(time));
     }
 }
