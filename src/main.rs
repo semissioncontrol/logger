@@ -19,13 +19,12 @@ use std::time::{SystemTime, UNIX_EPOCH};
 fn main() {
     let args: Vec<String> = env::args().collect();
 
-    let start = SystemTime::now();
-    let since_the_epoch = start
+    let CurrentTime = SystemTime::now();
+    let epochTime = CurrentTime
         .duration_since(UNIX_EPOCH)
         .expect("Time went backwards");
     
     let mut time = 10; // Set time in ms
-    
     let mut root_addr: String = "/semc/logger".to_owned();
 
     // If args are larger than 1 then parse these args 
@@ -54,11 +53,11 @@ fn main() {
 
         if(args.len() > 1) {
           if(args[1] == "-t") {
-            let start2 = SystemTime::now();
-            let since_the_epoch2 = start2
+            let currentTime_Second = SystemTime::now();
+            let currentEpochTime = currentTime_Second
                 .duration_since(UNIX_EPOCH)
                 .expect("Time went backwards"); 
-            if(since_the_epoch2.as_millis() - since_the_epoch.as_millis() > args[2].parse::<u128>().unwrap()) {
+            if(currentEpochTime.as_millis() - startingEpochTime.as_millis() > args[2].parse::<u128>().unwrap()) {
               break;
             }
           }
