@@ -26,10 +26,16 @@ fn main() {
     
     let mut time = 10; // Set time in ms
     
-    // If args are larger than 1 then parse them 
+    let mut root_addr: String = "/semc/logger".to_owned();
+
+    // If args are larger than 1 then parse these args 
     if(args.len() > 1) {
       if(args[1] == "-e") {
         time = args[2].parse::<u64>().unwrap();
+      } 
+      else if (args[1] == "-m") {
+        let path: &str = &args[2];
+        root_addr.push_str(path);     // I believe this is how you concatenate strings in rust so this may or may not work 
       }
     }
 
@@ -37,7 +43,7 @@ fn main() {
     // mentioned in theory, each module should have 
     // its own logger directory.
     let mut directories = vec![];
-    for entry in fs::read_dir("/semc/logger") {
+    for entry in fs::read_dir(root_addr) {
         directories.extend(entry)
     }
 
